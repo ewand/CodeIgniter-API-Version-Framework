@@ -31,7 +31,8 @@ There is one test method that can be accessed, at the moment it requires an API 
 #Installation:
 Copy the following files:<br />
 controllers/api.php     ->      application/controllers/api.php<br />
-controllers/api/*       ->      application/controllers/api/
+controllers/api/*       ->      application/controllers/api/<br />
+language/anglish/api_lang.php      ->      application/language/anglish/api_lang.php
 
 Modify the following files:<br />
 config/autoload.php<br />
