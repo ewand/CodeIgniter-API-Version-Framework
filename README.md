@@ -9,6 +9,7 @@ Currently only GET request type and parameters are supported, and only JSON outp
 
 There is one test method that can be accessed, at the moment it requires an API key to perform this action. Test urls below.
 
+#Test Links:
 /api
 [HTTP STATUS: 400]
 {"status":"error","error_code":"0","error_message":"API Version does not exist or not supplied"}
@@ -27,8 +28,7 @@ There is one test method that can be accessed, at the moment it requires an API 
 [HTTP STATUS: 400]
 {"status":"error","error_code":"0","error_message":"Action does not exist or not supplied"}
 
-Installation
-
+#Installation:
 Copy the following files:
 controllers/api.php     ->      application/controllers/api.php
 controllers/api/*       ->      application/controllers/api/
@@ -36,6 +36,5 @@ controllers/api/*       ->      application/controllers/api/
 Modify the following files:
 config/autoload.php
 line 99: added 'api' to the array or languages to autoload
-
 config/routes.php
 line 41: added new route for api/:any to point to api controller
