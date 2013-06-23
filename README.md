@@ -1,11 +1,11 @@
 CodeIgniter API Version Framework
 =================================
 
-Base API Framework for CodeIgniter with support for XML and JSON, and has versioning support.
+Base API Framework for CodeIgniter with support for XML and JSON, and has versioning support. Developed this code for a larger project, designed to be the starting point for anyone wanting to implement thier own API in CodeIgniter.
 
 Currently only GET request type and parameters are supported, and only JSON output.
 
-There is one test method that can 
+There is one test method that can be accessed, at the moment it requires an API key to perform this action. Test urls below.
 
 /api
 [HTTP STATUS: 400]
