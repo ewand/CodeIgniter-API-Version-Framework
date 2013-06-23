@@ -1,20 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * Class Api
- * @property CI_Uri $uri
- * @property Api_v1 $api
- */
+
 class Api extends CI_Controller {
 
     private $api = null;
 
-    public function __construct($params = array()) {
-        parent::__construct();
-        $this->load->language("api");
-    }
-
     public function index()
     {
+        $this->load->language("api");
         if ($this->load_version($this->uri->segment(2))) {
             $action = $this->uri->segment(3);
             if ($this->api->check_authentication()) {

@@ -1,7 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-/**
- * Class api_base
- */
 class api_base {
 
     protected $_ci;
