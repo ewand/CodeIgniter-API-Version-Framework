@@ -7,7 +7,7 @@ class api_v1 extends api_base {
      * @return bool
      */
     public function check_authentication() {
-        $key = $this->_input["apikey"];
+        $key = (isset($this->_input_parameters["apikey"])) ? $this->_input_parameters["apikey"] : "";
         if ($key == "TEST") {
 			$this->_user = "Api_test_user";
 			return true;

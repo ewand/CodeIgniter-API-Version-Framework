@@ -1,16 +1,30 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 class api_base {
 
+    // Instance of CodeIgniter
     protected $_ci;
-    protected $_input;
+
+    // Input type GET|POST|JSON|XML, determined by HTTP request content type and content
+    protected $_input_type;
+
+    // Input parameters, both GET parameters and POST values depending on input type
+    protected $_input_parameters = array();
+
+    // Output type JSON|XML, use either type specified in request, use input type or default to JSON
+    protected $_output_type = "JSON";
+
+    // User with authentication
     protected $_user;
+
+    // HTTP request type GET|POST|PUT|DELETE
     protected $_action_type;
 
+    // Get instance of CI, determine input type and values
     public function __construct($params = array()) {
         $this->_ci = get_instance();
-        $this->_ci->load->language("api");
         $this->_action_type = (isset($_SERVER['REQUEST_METHOD'])) ? $_SERVER['REQUEST_METHOD'] : "GET";
-        $this->_input = $this->expand_input();
+        $this->detect_input();
+        $this->expand_input();
     }
 
     /**
@@ -27,24 +41,39 @@ class api_base {
      * @return array
      */
     public function expand_input() {
-        switch ($this->_action_type) {
-            case "GET":
-                $data = $this->_ci->input->get();
+        if($this->_ci->input->get() != "") {
+            $this->_input_parameters = array_merge($this->_input_parameters, $this->_ci->input->get());
+        }
+        switch ($this->_input_type) {
+            case "HTML":
+                if ($this->_ci->input->post() != "") {
+                    $this->_input_parameters = array_merge($this->_input_parameters, $this->_ci->input->post());
+                }
                 break;
-            case "PUT":
-                $data = array();
+            case "JSON":
+                $json = json_decode(file_get_contents("php://input"), true);
+                $this->_input_parameters = array_merge($this->_input_parameters, $json);
                 break;
-            case "POST":
-                $data = array();
+            case "XML":
+                //TODO: Handle XML input
                 break;
-            case "DELETE":
-                $data = array();
+        }
+    }
+
+    public function detect_input() {
+        switch ($this->_ci->input->server('CONTENT_TYPE')) {
+            case "application/json":
+                $this->_input_type = "JSON";
+                $this->_output_type = "JSON";
+                break;
+            case "text/xml":
+                $this->_input_type = "XML";
+                $this->_output_type = "XML";
                 break;
             default:
-                $data = array();
-                exit;
+                $this->_input_type = "HTML";
+                $this->_output_type = "JSON";
         }
-        return $data;
     }
 
     /**
@@ -53,14 +82,19 @@ class api_base {
      * @param string $error             Any error message
      * @param string $http_error_code   HTML Error Code
      * @param string $error_code        Exception Error Code
-     * @param string $output_type        Output type JSON|XML
      */
-    public function output_results(array $results = array("status" => "OK"), $error = "", $http_error_code = "200", $error_code = "0", $output_type = "JSON") {
+    public function output_results(array $results = array("status" => "OK"), $error = "", $http_error_code = "200", $error_code = "0") {
         $data = $this->_parse_error($error, $http_error_code, $error_code, $results);
-        if ($output_type == "JSON") {
-            $this->_json_output($data);
-        } else {
-            $this->_xml_output($data);
+        switch ($this->_output_type) {
+            case "JSON":
+                $this->_json_output($data);
+                break;
+            case "XML":
+                $this->_xml_output($data);
+                break;
+            default:
+                $this->_json_output($data);
+                break;
         }
     }
 

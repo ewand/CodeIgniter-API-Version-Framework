@@ -6,7 +6,6 @@ class Api extends CI_Controller {
 
     public function index()
     {
-        $this->load->language("api");
         if ($this->load_version($this->uri->segment(2))) {
             $action = $this->uri->segment(3);
             if ($this->api->check_authentication()) {
