@@ -1,4 +1,4 @@
-CodeIgniter API Version Framework
+CodeIgniter API Server Framework with Versions and Multiple format
 =================================
 
 Built on CodeIgniter 2.1.3
