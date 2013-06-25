@@ -52,12 +52,40 @@ class api_base {
                 break;
             case "JSON":
                 $json = json_decode(file_get_contents("php://input"), true);
-                $this->_input_parameters = array_merge($this->_input_parameters, $json);
+                if (gettype($json) == "array") {
+                    $this->_input_parameters = array_merge($this->_input_parameters, $json);
+                } else if (gettype($json) == "string") {
+                    $this->_input_parameters = array_merge($this->_input_parameters, array("data" => $json));
+                }
                 break;
             case "XML":
-                //TODO: Handle XML input
+                $xml_string = file_get_contents("php://input");
+                if (gettype($xml_string) == "string") {
+                    $xml_object = simplexml_load_string($xml_string);
+                    $xml_array = $this->_objects_to_array($xml_object);
+                    $this->_input_parameters = array_merge($this->_input_parameters, $xml_array);
+                }
                 break;
         }
+    }
+
+    function _objects_to_array($obj, $arr_skip_indexes = array()) {
+        $arr = array();
+        if (is_object($obj)) {
+            $obj = get_object_vars($obj);
+        }
+        if (is_array($obj)) {
+            foreach ($obj as $index => $value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = $this->_objects_to_array($value, $arr_skip_indexes);
+                }
+                if (in_array($index, $arr_skip_indexes)) {
+                    continue;
+                }
+                $arr[$index] = $value;
+            }
+        }
+        return $arr;
     }
 
     public function detect_input() {
